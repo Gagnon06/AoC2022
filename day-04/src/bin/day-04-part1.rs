@@ -11,24 +11,26 @@ fn main() {
 }
 
 fn part1(input: &str) -> String {
-    input.lines()
+    input
+        .lines()
         .filter_map(|line| {
-            let ranges = line.split(",")
+            let ranges = line
+                .split(',')
                 .map(|raw_range| {
-                    raw_range.split("-").nth(0).unwrap().parse::<u32>().unwrap()..
-                    raw_range.split("-").nth(1).unwrap().parse::<u32>().unwrap()
+                    raw_range.split('-').next().unwrap().parse::<u32>().unwrap()
+                        ..raw_range.split('-').nth(1).unwrap().parse::<u32>().unwrap()
                 })
                 .collect::<Vec<Range<u32>>>();
 
             assert!(ranges.len() == 2);
 
-            ((ranges[0].start >= ranges[1].start && ranges[0].end <= ranges[1].end) ||
-             (ranges[1].start >= ranges[0].start && ranges[1].end <= ranges[0].end)).then_some(ranges[0].clone())
+            ((ranges[0].start >= ranges[1].start && ranges[0].end <= ranges[1].end)
+                || (ranges[1].start >= ranges[0].start && ranges[1].end <= ranges[0].end))
+                .then_some(ranges[0].clone())
         })
         .count()
         .to_string()
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -43,7 +45,8 @@ mod tests {
             5-7,7-9\n\
             2-8,3-7\n\
             6-6,4-6\n\
-            2-6,4-8");
+            2-6,4-8",
+        );
         assert_eq!(result, "2");
     }
 
@@ -53,7 +56,6 @@ mod tests {
         let result = part1(input);
         assert_eq!(result, "413");
     }
-
 }
 
 #[bench]

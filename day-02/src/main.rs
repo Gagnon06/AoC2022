@@ -1,18 +1,17 @@
-
 #[derive(Debug, PartialEq, Clone, Copy)]
 enum Hand {
     Rock = 1,
     Paper = 2,
-    Scissors = 3
+    Scissors = 3,
 }
 
 impl From<&str> for Hand {
     fn from(value: &str) -> Self {
-        return match value {
+        match value {
             "A" | "X" => Hand::Rock,
             "B" | "Y" => Hand::Paper,
             "C" | "Z" => Hand::Scissors,
-            _ => panic!("Invalid hand!")
+            _ => panic!("Invalid hand!"),
         }
     }
 }
@@ -20,38 +19,34 @@ impl From<&str> for Hand {
 #[derive(Debug, Clone, Copy)]
 struct Prevision {
     opponent: Hand,
-    outcome: Outcome
+    outcome: Outcome,
 }
 
 #[derive(Debug, Clone, Copy)]
 struct Round {
     opponent: Hand,
-    me: Hand
+    me: Hand,
 }
 
 impl From<Prevision> for Round {
     fn from(prevision: Prevision) -> Self {
         let me = match prevision.outcome {
             Outcome::Draw => prevision.opponent,
-            Outcome::Win => {
-                match prevision.opponent {
-                    Hand::Scissors => Hand::Rock,
-                    Hand::Paper => Hand::Scissors,
-                    Hand::Rock => Hand::Paper
-                }
-            }
-            Outcome::Lost => {
-                match prevision.opponent {
-                    Hand::Scissors => Hand::Paper,
-                    Hand::Paper => Hand::Rock,
-                    Hand::Rock => Hand::Scissors
-                }
-            }
+            Outcome::Win => match prevision.opponent {
+                Hand::Scissors => Hand::Rock,
+                Hand::Paper => Hand::Scissors,
+                Hand::Rock => Hand::Paper,
+            },
+            Outcome::Lost => match prevision.opponent {
+                Hand::Scissors => Hand::Paper,
+                Hand::Paper => Hand::Rock,
+                Hand::Rock => Hand::Scissors,
+            },
         };
 
         Round {
             me,
-            opponent: prevision.opponent
+            opponent: prevision.opponent,
         }
     }
 }
@@ -60,7 +55,7 @@ impl From<Prevision> for Round {
 enum Outcome {
     Lost = 0,
     Draw = 3,
-    Win = 6
+    Win = 6,
 }
 
 impl From<Round> for Outcome {
@@ -69,25 +64,23 @@ impl From<Round> for Outcome {
             return Outcome::Draw;
         }
 
-        if (round.me == Hand::Paper &&
-            round.opponent == Hand::Rock) ||
-           (round.me == Hand::Scissors &&
-            round.opponent == Hand::Paper) ||
-           (round.me == Hand::Rock &&
-            round.opponent == Hand::Scissors) {
+        if (round.me == Hand::Paper && round.opponent == Hand::Rock)
+            || (round.me == Hand::Scissors && round.opponent == Hand::Paper)
+            || (round.me == Hand::Rock && round.opponent == Hand::Scissors)
+        {
             return Outcome::Win;
         }
-        
-        return Outcome::Lost;
+
+        Outcome::Lost
     }
 }
 impl From<&str> for Outcome {
     fn from(value: &str) -> Self {
-        return match value {
+        match value {
             "X" => Outcome::Lost,
             "Y" => Outcome::Draw,
             "Z" => Outcome::Win,
-            _ => panic!("Invalid Outcome!")
+            _ => panic!("Invalid Outcome!"),
         }
     }
 }
@@ -100,12 +93,16 @@ fn main() -> std::io::Result<()> {
     //                                            .map(|x| Round{opponent: x[0], me: x[1]})
     //                                            .collect::<Vec<_>>();
 
-
     // Part 2 tournament
-    let tournament = input.lines().map(|x| x.split(" ").collect::<Vec<&str>>())
-                                                    .map(|x| Prevision{opponent: x[0].into(), outcome: x[1].into()})
-                                                    .map(|x| Round::from(x))
-                                                    .collect::<Vec<Round>>();
+    let tournament = input
+        .lines()
+        .map(|x| x.split(' ').collect::<Vec<&str>>())
+        .map(|x| Prevision {
+            opponent: x[0].into(),
+            outcome: x[1].into(),
+        })
+        .map(Round::from)
+        .collect::<Vec<Round>>();
 
     println!("{:?}", tournament);
 

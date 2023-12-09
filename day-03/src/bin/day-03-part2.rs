@@ -19,22 +19,23 @@ fn main() {
 fn part2(input: &str) -> String {
     let lines: Vec<&str> = input.lines().collect();
 
-    let priorities: Vec<u32> = (0..lines.len()).step_by(3)
+    let priorities: Vec<u32> = (0..lines.len())
+        .step_by(3)
         .filter_map(|line_idx| {
             let elf1 = lines[line_idx];
-            let elf2 = lines[line_idx+1];
-            let elf3 = lines[line_idx+2];
+            let elf2 = lines[line_idx + 1];
+            let elf3 = lines[line_idx + 2];
 
-            let matching: Vec<char> = elf1.chars()
-                .filter_map(|a| (elf2.find(a).is_some() && elf3.find(a).is_some()).then_some(a))
+            let matching: Vec<char> = elf1
+                .chars()
+                .filter(|&a| elf2.find(a).is_some() && elf3.find(a).is_some())
                 .collect();
-            (matching.len() >= 1).then_some(item_to_priority(matching[0]))
+            (!matching.is_empty()).then_some(item_to_priority(matching[0]))
         })
         .collect();
 
     priorities.iter().sum::<u32>().to_string()
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -49,7 +50,8 @@ mod tests {
             PmmdzqPrVvPwwTWBwg\n\
             wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n\
             ttgJtRGJQctTZtZT\n\
-            CrZsJsPPZsGzwwsLwLmpwMDw");
+            CrZsJsPPZsGzwwsLwLmpwMDw",
+        );
         assert_eq!(result, "70");
     }
 
@@ -59,7 +61,6 @@ mod tests {
         let result = part2(input);
         assert_eq!(result, "2525");
     }
-
 }
 
 #[bench]

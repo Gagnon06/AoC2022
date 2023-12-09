@@ -17,21 +17,21 @@ fn main() {
 }
 
 fn part1(input: &str) -> String {
-    let priorities: Vec<u32> = input.lines()
+    let priorities: Vec<u32> = input
+        .lines()
         .filter_map(|line| {
-            let compartments = line.split_at(line.len()/2);
-            let matching: Vec<char> = compartments.0.chars()
-                .filter_map(|a| {
-                    compartments.1.find(a).is_some().then_some(a)
-                })
+            let compartments = line.split_at(line.len() / 2);
+            let matching: Vec<char> = compartments
+                .0
+                .chars()
+                .filter(|&a| compartments.1.find(a).is_some())
                 .collect();
-            (matching.len() >= 1).then_some(item_to_priority(matching[0]))
+            (!matching.is_empty()).then_some(item_to_priority(matching[0]))
         })
         .collect();
 
     priorities.iter().sum::<u32>().to_string()
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -46,7 +46,8 @@ mod tests {
             PmmdzqPrVvPwwTWBwg\n\
             wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n\
             ttgJtRGJQctTZtZT\n\
-            CrZsJsPPZsGzwwsLwLmpwMDw");
+            CrZsJsPPZsGzwwsLwLmpwMDw",
+        );
         assert_eq!(result, "157");
     }
 
@@ -56,7 +57,6 @@ mod tests {
         let result = part1(input);
         assert_eq!(result, "7581");
     }
-
 }
 
 #[bench]
